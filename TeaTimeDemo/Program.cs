@@ -23,6 +23,13 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LogoutPath = $"/Identity/Account/Logout";
     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin()
+                         .AllowAnyMethod()
+                         .AllowAnyHeader());
+});
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
@@ -39,7 +46,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseCors("AllowAll");
 app.UseRouting();
 SeedDatabase();
 app.UseAuthentication();
